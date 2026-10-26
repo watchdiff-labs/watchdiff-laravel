@@ -24,6 +24,16 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      # Laravel 10's full release history has at least one unpatched
+      # security advisory covering every version, so the PHP 8.1 job (which
+      # can only resolve orchestra/testbench 8.x, which needs
+      # laravel/framework ^10.0) has no advisory-clean version to install.
+      # These are require-dev only (test tooling, never shipped to
+      # consumers of this package), so the risk of disabling the block here
+      # is scoped to this CI job's own test run, not any real deployment.
+      - name: Allow installing packages with open security advisories (require-dev only, see comment above)
+        run: composer config -g policy.advisories.block false
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
